@@ -38,7 +38,7 @@ engine = create_engine(DATABASE_URI)
 
     
 def fetch_all_users():
-    query = "SELECT up.user_id AS user_id, vc.id AS video_call_session_id FROM user_scenario_id us INNER JOIN video_call_session vc ON us.id = vc.user_scenario_id WHERE vc.deleted_at IS NULL AND us.user_id IS NOT NULL"
+    query = "SELECT us.user_id AS user_id, vc.id AS video_call_session_id FROM user_scenario us INNER JOIN video_call_session vc ON us.id = vc.user_scenario_id WHERE vc.deleted_at IS NULL AND us.user_id IS NOT NULL"
     return pd.read_sql_query(query, engine)
     
     
@@ -52,13 +52,13 @@ def filter_scores(query_result):
     
 
 def query_scores(series, today, yesterday):
-    history_message_id = series['video_call_session_id']
+    video_call_session_id = series['video_call_session_id']
     try:
         query = {
             "TableName": SCORING_TABLE_NAME,
             "KeyConditions": {
-                "history_message_id": {
-                    "AttributeValueList": [{"N": str(history_message_id)}],
+                "video_call_session_id": {
+                    "AttributeValueList": [{"N": str(video_call_session_id)}],
                     "ComparisonOperator": "EQ"
                 },
                 "end_time": {
@@ -106,4 +106,5 @@ def main(event, context):
 
     
 if __name__ == "__main__":
-    main({}, {})
+    event = {""}
+    main(event, None)
